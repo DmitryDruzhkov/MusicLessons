@@ -56,7 +56,7 @@ export class DrawService {
   public drawAccidental(element: Element) {
     this.ctx.save();
     this.ctx.beginPath();
-    this.ctx.font = '20px Arial';
+    this.ctx.font = '30px Arial';
     this.ctx.textAlign = 'center';
     this.ctx.textBaseline = 'middle';
 
@@ -70,8 +70,8 @@ export class DrawService {
     this.ctx.arc(element.x, element.y, 10, 0, 2 * Math.PI);
     this.ctx.fillStyle = element.selected ? 'pink' : 'black';
     this.ctx.fill();
-    this.ctx.fillStyle = 'black';
-    /* this.ctx.fillText(element.name as string, element.x - 10, element.y + 20); */
+    this.ctx.closePath(); // Закрываем путь, чтобы избежать рисования контура
+    this.ctx.fillStyle = 'black'; // Возвращаем черный цвет для текста
   }
 
   public drawStepNumbers(elements: Element[]) {
