@@ -1,0 +1,17 @@
+<div class="p-4">
+  <h1 class="text-2xl font-bold mb-4">Music Game</h1>
+  <div class="mb-4">
+    <select [(ngModel)]="currentNote" class="p-2 border rounded">
+      @for (note of notesList; track $index) {
+        <option [value]="note">{{ note }}</option>
+      }
+      
+    </select>
+  </div>
+  <canvas #canvas width="600" height="200" (click)="addNote($event)" class="border"></canvas>
+  <div class="mb-4">
+    <button (click)="playNotes()" class="p-2 bg-green-500 text-white rounded">
+      Play Notes
+    </button>
+  </div>
+</div>
