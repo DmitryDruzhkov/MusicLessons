@@ -35,7 +35,7 @@ export class Sample2Component {
 
     this.task().elements.forEach(element => {
       if (element.type === 'note') {
-        const dx = element.x - x;
+        const dx = this.drawService.notePositions[element.name as string] - x;
         const dy = element.y - y;
         if (Math.sqrt(dx * dx + dy * dy) < 10) {
           element.selected = !element.selected;
@@ -59,5 +59,6 @@ export class Sample2Component {
   private setContext() {
     const ctx = this.canvas.nativeElement.getContext('2d') as CanvasRenderingContext2D;
     this.drawService.setCtx(ctx);
+    this.drawService.setCanvas(this.canvas);
   }
 }

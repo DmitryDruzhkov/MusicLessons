@@ -5,7 +5,6 @@ export interface Task {
 
 export interface Element {
   type: string;
-  x: number;
   y: number;
   name?: string;
   stepNumber?: string;

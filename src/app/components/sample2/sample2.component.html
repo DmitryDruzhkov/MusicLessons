@@ -1,6 +1,6 @@
 <div class="container">
   <span class="title">{{ task().title }}</span>
-  <canvas #canvas width="500" height="150" (click)="selectNote($event)"></canvas>
+  <canvas #canvas width="500" height="300" (click)="selectNote($event)"></canvas>
   <button (click)="checkNotes()">Проверить</button>
   <div class="result">{{ resultMessage }}</div>
 </div>
