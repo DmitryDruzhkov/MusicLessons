@@ -1,0 +1,17 @@
+<div class="centered-container">
+  <div class="note-container">
+    <div
+      *ngFor="let note of notes"
+      cdkDrag
+      (cdkDragEnded)="onDragEnded($event, note)"
+      (cdkDragMoved)="onDragMoved($event, note)"
+      [cdkDragFreeDragPosition]="note.position"
+      class="note">
+      {{ note.name }}
+    </div>
+  </div>
+
+  <div class="grid-container">
+    <div class="grid-line" *ngFor="let line of gridLines" [style.left.px]="line">{{line}}</div>
+  </div>
+</div>

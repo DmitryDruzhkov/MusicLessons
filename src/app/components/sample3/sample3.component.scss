@@ -1,0 +1,34 @@
+.notes-tutorial {
+  text-align: center;
+}
+
+.staff {
+  margin: 20px auto;
+  border: 1px solid #ccc;
+}
+
+.clef {
+  stroke-width: 2;
+}
+
+.notes-container {
+  display: flex;
+  justify-content: center;
+  margin-top: 20px;
+}
+
+.notes-container .note {
+  margin: 0 10px;
+  cursor: move;
+}
+
+.notes-area {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+.notes-area .note {
+  position: absolute;
+  cursor: move;
+}

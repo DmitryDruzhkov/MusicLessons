@@ -1,0 +1,42 @@
+<div class="notes-tutorial">
+  <h2>Учебник по изучению нот</h2>
+  <p>{{ taskText }}</p>
+  <svg width="600" height="200" class="staff">
+    <g class="clef">
+      <path d="M10 20 Q20 10, 30 20 T50 20 T70 20 T90 20 T110 20" stroke="black" fill="transparent"/>
+    </g>
+    <g class="lines">
+      <line x1="50" y1="40" x2="550" y2="40" stroke="black"/>
+      <line x1="50" y1="60" x2="550" y2="60" stroke="black"/>
+      <line x1="50" y1="80" x2="550" y2="80" stroke="black"/>
+      <line x1="50" y1="100" x2="550" y2="100" stroke="black"/>
+      <line x1="50" y1="120" x2="550" y2="120" stroke="black"/>
+    </g>
+    <g class="notes-area" (drop)="drop($event)" (dragover)="allowDrop($event)">
+      <svg *ngFor="let note of placedNotes"
+           [attr.x]="note.x"
+           [attr.y]="note.y"
+           width="40"
+           height="40"
+           class="note"
+           draggable="true"
+           (dragstart)="dragStart($event, note)">
+        <ellipse cx="20" cy="20" rx="10" ry="15" fill="rgba(0, 0, 0, 0.5)"></ellipse>
+        <text x="20" y="25" font-size="10" text-anchor="middle" fill="white">{{ note.name }}</text>
+      </svg>
+    </g>
+  </svg>
+  <div class="notes-container">
+    <svg *ngFor="let note of notes"
+         width="40"
+         height="40"
+         class="note"
+         [attr.data-name]="note.name"
+         draggable="true"
+         (dragstart)="dragStart($event, note)">
+      <ellipse cx="20" cy="20" rx="10" ry="15" fill="rgba(0, 0, 0, 0.5)"></ellipse>
+      <text x="20" y="25" font-size="10" text-anchor="middle" fill="white">{{ note.name }}</text>
+    </svg>
+  </div>
+  <button (click)="checkTask()">Проверить задание</button>
+</div>
