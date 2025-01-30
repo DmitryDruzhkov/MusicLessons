@@ -1,0 +1,40 @@
+<div class="container">
+  <!-- Нотная сетка и ноты -->
+  <svg class="notes-container" width="500" height="300">
+    <!-- Горизонтальные линии нотной сетки -->
+    <line *ngFor="let line of staffLines" 
+          [attr.x1]="line.x1" 
+          [attr.y1]="line.y1" 
+          [attr.x2]="line.x2" 
+          [attr.y2]="line.y2" 
+          stroke="black" 
+          stroke-width="2" />
+
+    <!-- Скрипичный ключ -->
+    <image [attr.xlink:href]="trebleClefImage" x="10" y="50" width="40" height="120" />
+
+    <!-- Ноты -->
+    <g *ngFor="let note of notes">
+      <ellipse [attr.cx]="note.x" 
+               [attr.cy]="note.y" 
+               [attr.rx]="15" 
+               [attr.ry]="10" 
+               [ngClass]="{'selected': note.isSelected}" 
+               (click)="selectNote(note)"
+               stroke="black" 
+               stroke-width="2" 
+               fill="white"
+               style="pointer-events: all; z-index: 2;" />
+      <text [attr.x]="note.x - 5" 
+            [attr.y]="note.y + 5" 
+            fill="black"
+            style="pointer-events: none; z-index: 1;">{{ note.name }}</text>
+    </g>
+  </svg>
+
+  <!-- Кнопка проверки и результаты -->
+  <div class="controls">
+    <button (click)="checkNotes()">Проверить</button>
+    <div *ngIf="message" class="message">{{ message }}</div>
+  </div>
+</div>

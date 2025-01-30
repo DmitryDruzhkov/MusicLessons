@@ -37,19 +37,20 @@ export class Sample4Component {
     const noteX = noteRect.left - containerRect.left + noteRect.width / 2;
     const noteY = noteRect.top - containerRect.top + noteRect.height / 2;
 
-    if (noteX < 0 || noteX > containerRect.width || noteY < 0 || noteY > containerRect.height) {
+    /* if (noteX < 0 || noteX > containerRect.width || noteY < 0 || noteY > containerRect.height) {
       this.returnNoteToOriginalPosition(note);
       return;
-    }
+    } */
 
     const closestLine = this.findClosestLine(noteX);
-
-    if (this.occupiedLines.has(closestLine)) {
+    console.log(closestLine)
+    /* if (this.occupiedLines.has(closestLine)) {
       this.returnNoteToOriginalPosition(note);
-    } else {
+    } else { */
       this.occupiedLines.add(closestLine);
-      note.position = { x: closestLine - note.originalPosition.x, y: noteY - note.originalPosition.y };
-    }
+      console.log({ x: closestLine - note.originalPosition.x, y: noteY - note.originalPosition.y })
+      /* note.position = { x: closestLine - note.originalPosition.x, y: noteY - note.originalPosition.y }; */
+    /* } */
   }
 
   findClosestLine(x: number): number {

@@ -1,0 +1,12 @@
+<div class="note-container">
+  <div *ngFor="let note of notes; let i = index" 
+       cdkDrag 
+       (cdkDragEnded)="onDragEnded($event, i)"
+       class="note-circle">
+    {{ note }}
+  </div>
+</div>
+
+<div class="staff">
+  <div *ngFor="let line of staffLines" class="staff-line"></div>
+</div>

@@ -1,0 +1,31 @@
+.container {
+  width: 500px;
+  margin: 0 auto; /* Центрирование контейнера */
+  text-align: center; /* Центрирование содержимого */
+}
+
+.notes-container {
+  display: block;
+  margin: 0 auto; /* Центрирование SVG */
+  border: 1px solid #ccc;
+  position: relative;
+}
+
+.selected {
+  fill: black !important;
+}
+
+text {
+  font-size: 14px;
+  text-anchor: middle;
+}
+
+.controls {
+  margin-top: 20px;
+}
+
+.message {
+  margin-top: 10px;
+  font-size: 16px;
+  color: green;
+}
