@@ -60,7 +60,7 @@ export class DrawService {
 
   public drawTrebleClefImage(x: number, y: number) {
     const img = new Image();
-    img.src = 'clef/clef.png';
+    img.src = 'assets/clef.png';
     img.onload = () => {
       this.ctx.drawImage(img, x, y /* - img.height / 2 */, 50, 100);
     };

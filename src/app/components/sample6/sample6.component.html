@@ -1,6 +1,6 @@
 <div class="container">
-  <!-- Нотная сетка и ноты -->
-  <svg class="notes-container" width="500" height="300">
+  <!-- Нотная сетка и элементы -->
+  <svg class="notes-container" width="500" height="400">
     <!-- Горизонтальные линии нотной сетки -->
     <line *ngFor="let line of staffLines" 
           [attr.x1]="line.x1" 
@@ -10,26 +10,42 @@
           stroke="black" 
           stroke-width="2" />
 
-    <!-- Скрипичный ключ -->
-    <image [attr.xlink:href]="trebleClefImage" x="10" y="50" width="40" height="120" />
+    <!-- Элементы (ключ, знак, ноты) -->
+    <ng-container *ngFor="let noteElement of noteElements">
+      <!-- Скрипичный или басовый ключ -->
+      <svg:image *ngIf="noteElement.type === 'clef'" 
+                [attr.xlink:href]="getClefImage(noteElement)" 
+                [attr.x]="noteElement.x" 
+                [attr.y]="noteElement.y" 
+                [attr.width]="noteElement.width" 
+                [attr.height]="noteElement.height" />
 
-    <!-- Ноты -->
-    <g *ngFor="let note of notes">
-      <ellipse [attr.cx]="note.x" 
-               [attr.cy]="note.y" 
-               [attr.rx]="15" 
-               [attr.ry]="10" 
-               [ngClass]="{'selected': note.isSelected}" 
-               (click)="selectNote(note)"
-               stroke="black" 
-               stroke-width="2" 
-               fill="white"
-               style="pointer-events: all; z-index: 2;" />
-      <text [attr.x]="note.x - 5" 
-            [attr.y]="note.y + 5" 
-            fill="black"
-            style="pointer-events: none; z-index: 1;">{{ note.name }}</text>
-    </g>
+      <!-- Знак (диез или бемоль) -->
+      <svg:image *ngIf="noteElement.type === 'sign'" 
+                [attr.xlink:href]="getSignImage(noteElement)" 
+                [attr.x]="noteElement.x" 
+                [attr.y]="noteElement.y" 
+                [attr.width]="noteElement.width" 
+                [attr.height]="noteElement.height" />
+
+      <!-- Ноты -->
+      <g *ngIf="noteElement.type === 'note'">
+        <ellipse [attr.cx]="noteElement.x" 
+                 [attr.cy]="noteElement.y" 
+                 [attr.rx]="15" 
+                 [attr.ry]="10" 
+                 [ngClass]="{'selected': noteElement.isSelected}" 
+                 (click)="selectNote(noteElement)"
+                 stroke="black" 
+                 stroke-width="2" 
+                 fill="white"
+                 style="pointer-events: all; z-index: 2;" />
+        <text [attr.x]="noteElement.x - 5" 
+              [attr.y]="noteElement.y + 5" 
+              fill="black"
+              style="pointer-events: none; z-index: 1;">{{ noteElement.name }}</text>
+      </g>
+    </ng-container>
   </svg>
 
   <!-- Кнопка проверки и результаты -->

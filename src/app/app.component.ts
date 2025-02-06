@@ -7,10 +7,12 @@ import { Sample3Component } from './components/sample3/sample3.component';
 import { Sample4Component } from './components/sample4/sample4.component';
 import { Sample5Component } from './components/sample5/sample5.component';
 import { Sample6Component } from './components/sample6/sample6.component';
+import { noteElements } from './components/sample6/note.constants';
+import { MusicGameComponent } from './components/sample7/sample7.component';
 
 @Component({
   selector: 'app-root',
-  imports: [Sample1Component, Sample2Component, Sample3Component, Sample4Component, Sample5Component, Sample6Component],
+  imports: [Sample1Component, Sample2Component, Sample3Component, Sample4Component, Sample5Component, Sample6Component, MusicGameComponent],
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -19,4 +21,7 @@ export class AppComponent {
   private tasksService = inject(TasksService);
 
   public tasks:  Signal<Task[]>  = this.tasksService.tasks;
+
+  public noteElements = noteElements
+
 }
