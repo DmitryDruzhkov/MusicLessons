@@ -13,10 +13,12 @@ import { CdkDrag, DragDropModule } from '@angular/cdk/drag-drop';
       <div class="note-palette">
         <div *ngFor="let note of notes; let i = index" 
              class="note" 
-             [style.left.px]="originalPositions[i].x" 
+             [style.transform]="'translate(' + note.x + 'px, ' + note.y + 'px)'" 
              cdkDrag 
+             (cdkDragStarted)="onDragStart($event, note)"
+             (cdkDragMoved)="onDragMove($event, note)"
              (cdkDragEnded)="onDragEnd($event, note, i)">
-          {{ note }}
+          {{ note.name }}
         </div>
       </div>
 
@@ -28,9 +30,10 @@ import { CdkDrag, DragDropModule } from '@angular/cdk/drag-drop';
         <div *ngFor="let note of placedNotes; let i = index" 
              class="note" 
              cdkDrag
-             (cdkDragEnded)="onDragMove($event, note, i)"
-             [style.top.px]="note.y - 20" 
-             [style.left.px]="note.x - 20">
+             (cdkDragStarted)="onDragStart($event, note)"
+             (cdkDragMoved)="onDragMove($event, note)"
+             (cdkDragEnded)="onDragEnd($event, note, i)"
+             [style.transform]="'translate(' + note.x + 'px, ' + note.y + 'px)'">
           {{ note.name }}
         </div>
       </div>
@@ -51,15 +54,15 @@ import { CdkDrag, DragDropModule } from '@angular/cdk/drag-drop';
       position: relative;
     }
     .note {
-      width: 40px;
-      height: 40px;
+      width: 30px;
+      height: 20px;
       background-color: lightblue;
       text-align: center;
-      line-height: 40px;
+      line-height: 20px;
       border-radius: 50%;
       cursor: grab;
       position: absolute;
-      transition: top 200ms ease, left 200ms ease;
+      transition: transform 100ms ease;
     }
     .staff-container {
       width: 500px;
@@ -87,11 +90,14 @@ import { CdkDrag, DragDropModule } from '@angular/cdk/drag-drop';
   ]
 })
 export class MusicGameComponent {
-  notes = ['C', 'D', 'E', 'F', 'G', 'A', 'B'];
+  notes = [
+    { name: 'C', x: 15, y: 10 }, { name: 'D', x: 75, y: 10 }, { name: 'E', x: 135, y: 10 },
+    { name: 'F', x: 195, y: 10 }, { name: 'G', x: 255, y: 10 }, { name: 'A', x: 315, y: 10 },
+    { name: 'B', x: 375, y: 10 }
+  ];
   placedNotes: { name: string; x: number; y: number }[] = [];
   lines = new Array(5).fill(0).map((_, i) => ({ top: (i + 1) * 40 }));
   verticalLines = new Array(7).fill(0).map((_, i) => ({ left: i * 60 + 64 }));
-  originalPositions = this.notes.map((_, i) => ({ x: i * 60, y: 0 }));
   snapPoints = this.lines.flatMap(l => this.verticalLines.map(v => ({ x: v.left, y: l.top })));
 
   getClosestSnap(x: number, y: number) {
@@ -102,36 +108,32 @@ export class MusicGameComponent {
     });
   }
 
-  onDragEnd(event: any, note: string, index: number) {
-    const boundingRect = event.source.element.nativeElement.getBoundingClientRect();
-    const staffRect = document.querySelector('.staff-container')?.getBoundingClientRect();
-    
-    if (staffRect) {
-      const { x, y } = this.getClosestSnap(boundingRect.left - staffRect.left, boundingRect.top - staffRect.top);
-      
-      if (!this.placedNotes.some(n => n.x === x && n.y === y)) {
-        this.placedNotes.push({ name: note, x, y });
-        this.notes = this.notes.filter(n => n !== note);
-      } else {
-        event.source.element.nativeElement.style.transition = 'top 200ms ease, left 200ms ease';
-        event.source.reset();
-      }
-    }
+  onDragStart(event: any, note: { name: string; x: number; y: number }) {
+    note.x = event.source.getFreeDragPosition().x;
+    note.y = event.source.getFreeDragPosition().y;
   }
 
-  onDragMove(event: any, note: { name: string; x: number; y: number }, index: number) {
+  onDragMove(event: any, note: { name: string; x: number; y: number }) {
+    note.x = event.source.getFreeDragPosition().x;
+    note.y = event.source.getFreeDragPosition().y;
+  }
+
+  onDragEnd(event: any, note: { name: string; x: number; y: number }, index: number) {
     const boundingRect = event.source.element.nativeElement.getBoundingClientRect();
     const staffRect = document.querySelector('.staff-container')?.getBoundingClientRect();
     
     if (staffRect) {
-      const { x, y } = this.getClosestSnap(boundingRect.left - staffRect.left, boundingRect.top - staffRect.top);
+      const centerX = boundingRect.left - staffRect.left + 15;
+      const centerY = boundingRect.top - staffRect.top + 10;
+      const { x, y } = this.getClosestSnap(centerX, centerY);
       
       if (!this.placedNotes.some(n => n.x === x && n.y === y)) {
         note.x = x;
         note.y = y;
+        this.placedNotes.push(note);
+        this.notes.splice(index, 1);
       } else {
-        event.source.element.nativeElement.style.transition = 'top 200ms ease, left 200ms ease';
-        event.source.reset();
+        setTimeout(() => event.source.reset(), 100);
       }
     }
   }
