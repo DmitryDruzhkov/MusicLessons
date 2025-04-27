@@ -16,7 +16,6 @@ import { CdkDrag, DragDropModule } from '@angular/cdk/drag-drop';
              [style.transform]="'translate(' + note.x + 'px, ' + note.y + 'px)'" 
              cdkDrag 
              (cdkDragStarted)="onDragStart($event, note)"
-             (cdkDragMoved)="onDragMove($event, note)"
              (cdkDragEnded)="onDragEnd($event, note, i)">
           {{ note.name }}
         </div>
@@ -27,12 +26,11 @@ import { CdkDrag, DragDropModule } from '@angular/cdk/drag-drop';
         <div *ngFor="let vline of verticalLines" 
              class="staff-vertical-line" 
              [style.left.px]="vline.left"></div>
-        <div *ngFor="let note of placedNotes; let i = index" 
+        <div *ngFor="let note of placedNotes" 
              class="note" 
              cdkDrag
              (cdkDragStarted)="onDragStart($event, note)"
-             (cdkDragMoved)="onDragMove($event, note)"
-             (cdkDragEnded)="onDragEnd($event, note, i)"
+             (cdkDragEnded)="onDragEnd($event, note, -1)"
              [style.transform]="'translate(' + note.x + 'px, ' + note.y + 'px)'">
           {{ note.name }}
         </div>
@@ -49,6 +47,7 @@ import { CdkDrag, DragDropModule } from '@angular/cdk/drag-drop';
     }
     .note-palette {
       display: flex;
+      justify-content: center;
       gap: 20px;
       margin-bottom: 64px;
       position: relative;
@@ -91,31 +90,18 @@ import { CdkDrag, DragDropModule } from '@angular/cdk/drag-drop';
 })
 export class MusicGameComponent {
   notes = [
-    { name: 'C', x: 15, y: 10 }, { name: 'D', x: 75, y: 10 }, { name: 'E', x: 135, y: 10 },
-    { name: 'F', x: 195, y: 10 }, { name: 'G', x: 255, y: 10 }, { name: 'A', x: 315, y: 10 },
-    { name: 'B', x: 375, y: 10 }
+    { name: 'C', x: 100, y: 0 }, { name: 'D', x: 160, y: 0 }, { name: 'E', x: 220, y: 0 },
+    { name: 'F', x: 280, y: 0 }, { name: 'G', x: 340, y: 0 }, { name: 'A', x: 400, y: 0 },
+    { name: 'B', x: 460, y: 0 }
   ];
   placedNotes: { name: string; x: number; y: number }[] = [];
   lines = new Array(5).fill(0).map((_, i) => ({ top: (i + 1) * 40 }));
   verticalLines = new Array(7).fill(0).map((_, i) => ({ left: i * 60 + 64 }));
   snapPoints = this.lines.flatMap(l => this.verticalLines.map(v => ({ x: v.left, y: l.top })));
 
-  getClosestSnap(x: number, y: number) {
-    return this.snapPoints.reduce((prev, curr) => {
-      const prevDist = Math.hypot(prev.x - x, prev.y - y);
-      const currDist = Math.hypot(curr.x - x, curr.y - y);
-      return currDist < prevDist ? curr : prev;
-    });
-  }
-
   onDragStart(event: any, note: { name: string; x: number; y: number }) {
-    note.x = event.source.getFreeDragPosition().x;
-    note.y = event.source.getFreeDragPosition().y;
-  }
-
-  onDragMove(event: any, note: { name: string; x: number; y: number }) {
-    note.x = event.source.getFreeDragPosition().x;
-    note.y = event.source.getFreeDragPosition().y;
+    // Удаляем ноту из списка размещенных, если она уже была размещена
+    this.placedNotes = this.placedNotes.filter(n => !(n.name === note.name && n.x === note.x && n.y === note.y));
   }
 
   onDragEnd(event: any, note: { name: string; x: number; y: number }, index: number) {
@@ -123,18 +109,28 @@ export class MusicGameComponent {
     const staffRect = document.querySelector('.staff-container')?.getBoundingClientRect();
     
     if (staffRect) {
-      const centerX = boundingRect.left - staffRect.left + 15;
-      const centerY = boundingRect.top - staffRect.top + 10;
-      const { x, y } = this.getClosestSnap(centerX, centerY);
+      const centerX = boundingRect.left - staffRect.left + boundingRect.width / 2;
+      const centerY = boundingRect.top - staffRect.top + boundingRect.height / 2;
+      const closest = this.getClosestSnap(centerX, centerY);
       
-      if (!this.placedNotes.some(n => n.x === x && n.y === y)) {
-        note.x = x;
-        note.y = y;
+      if (!this.placedNotes.some(n => n.x === closest.x && n.y === closest.y)) {
+        note.x = closest.x;
+        note.y = closest.y;
         this.placedNotes.push(note);
-        this.notes.splice(index, 1);
+        if (index !== -1) {
+          this.notes.splice(index, 1);
+        }
       } else {
         setTimeout(() => event.source.reset(), 100);
       }
     }
+  }
+
+  getClosestSnap(x: number, y: number) {
+    return this.snapPoints.reduce((prev, curr) => {
+      const prevDist = Math.hypot(prev.x - x, prev.y - y);
+      const currDist = Math.hypot(curr.x - x, curr.y - y);
+      return currDist < prevDist ? curr : prev;
+    });
   }
 }
