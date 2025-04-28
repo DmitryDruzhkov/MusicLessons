@@ -27,9 +27,9 @@ export class AppComponent {
 
   public taskNotes: { name: string; x: number; y: number; stepNumber?: string }[] = [
     { name: 'До', x: 50, y: 180, stepNumber: 'V' },
-    { name: 'Ре', x: 100, y: 150, stepNumber: 'V' },
-    { name: 'Ми', x: 150, y: 120, stepNumber: 'V' },
-    { name: 'Фа', x: 200, y: 90, stepNumber: 'V' },
-    { name: 'Соль', x: 250, y: 60, stepNumber: 'V' },
+    { name: 'Ре', x: 125, y: 150, stepNumber: 'V' },
+    { name: 'Ми', x: 200, y: 120, stepNumber: 'V' },
+    { name: 'Фа', x: 275, y: 90, stepNumber: 'V' },
+    { name: 'Соль', x: 350, y: 60, stepNumber: 'V' },
   ];
 }

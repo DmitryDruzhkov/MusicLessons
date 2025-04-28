@@ -114,6 +114,7 @@ import { InlineSVGModule } from 'ng-inline-svg-2';
       }
 
       .step-labels {
+        margin-left: 170px;
         position: absolute;
         top: 180px;
         width: 100%;
@@ -231,7 +232,7 @@ export class AppMusic8Component {
     let y = this.draggingNote.y - this.draggingNote.offsetY + 12;
 
     const snappedX = Math.round(x / this.xStep) * this.xStep - 20;
-    const snappedY = Math.round(y / this.yStep / 2) * (this.yStep / 2) - 12;
+    const snappedY = Math.round(y / (this.yStep / 2)) * (this.yStep / 2) - 12;
 
     const conflict = this.placedNotes.some((note) => note.x === snappedX);
 
