@@ -44,6 +44,9 @@ import { Task } from '../../shared/interfaces';
           (mousedown)="startDrag($event, note, true)"
         >
           {{ note.name }}
+          @if (note.isWithSubLine) {
+          <div class="subline"></div>
+          }
         </div>
 
         <span class="clef" [inlineSVG]="'assets/clef.svg'"></span>
@@ -93,6 +96,15 @@ import { Task } from '../../shared/interfaces';
         position: relative;
         height: 50px;
         width: 400px;
+      }
+
+      .subline {
+        width: 60px;
+        display: flex;
+        border: 1px solid;
+        position: relative;
+        bottom: 12px;
+        left: -11px;
       }
 
       .note {
@@ -243,25 +255,35 @@ export class AppMusic8Component {
     const isByClif: boolean = x < this.clifOffset;
 
     if (conflict || isByClif) {
-      const note = document.createElement('div');
-      note.className = 'note';
-      note.style.position = 'absolute';
-      note.style.left = `${this.draggingNote.originalX}px`;
-      note.style.top = `${this.draggingNote.originalY}px`;
-      note.textContent = this.draggingNote.name;
-      note.style.background = 'lightblue';
-      note.style.transition = 'top 0.3s ease, left 0.3s ease';
-      this.noteLine.nativeElement.appendChild(note);
-
-      setTimeout(() => {
-        this.noteLine.nativeElement.removeChild(note);
-      }, 300);
+      this.setToDefaultPlace();
     } else {
-      console.log('name', this.draggingNote.name, 'x', snappedX, 'y', snappedY)
-      this.placedNotes.push({ ...this.draggingNote, x: snappedX, y: snappedY });
+      console.log('name', this.draggingNote.name, 'x', snappedX, 'y', snappedY);
+      const isWithSubLine: boolean = snappedY > 120 || snappedY < 0;
+      this.placedNotes.push({
+        ...this.draggingNote,
+        x: snappedX,
+        y: snappedY,
+        isWithSubLine,
+      });
     }
 
     this.draggingNote = null;
+  }
+
+  setToDefaultPlace() {
+    const note = document.createElement('div');
+    note.className = 'note';
+    note.style.position = 'absolute';
+    note.style.left = `${this.draggingNote.originalX}px`;
+    note.style.top = `${this.draggingNote.originalY}px`;
+    note.textContent = this.draggingNote.name;
+    note.style.background = 'lightblue';
+    note.style.transition = 'top 0.3s ease, left 0.3s ease';
+    this.noteLine.nativeElement.appendChild(note);
+
+    setTimeout(() => {
+      this.noteLine.nativeElement.removeChild(note);
+    }, 300);
   }
 
   checkNotes() {
