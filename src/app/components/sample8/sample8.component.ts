@@ -3,10 +3,12 @@ import {
   ElementRef,
   ViewChild,
   HostListener,
-  Input,
+  InputSignal,
+  input,
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { InlineSVGModule } from 'ng-inline-svg-2';
+import { Task } from '../../shared/interfaces';
 
 @Component({
   selector: 'app-music-game-8',
@@ -14,6 +16,9 @@ import { InlineSVGModule } from 'ng-inline-svg-2';
   imports: [CommonModule, InlineSVGModule],
   template: `
     <div class="container">
+      <div class="title">
+        {{ task().title }}
+      </div>
       <div class="note-line" #noteLine>
         <div
           *ngFor="let note of notes; let i = index"
@@ -56,7 +61,7 @@ import { InlineSVGModule } from 'ng-inline-svg-2';
 
         <div class="step-labels">
           <div
-            *ngFor="let pos of correctPositions"
+            *ngFor="let pos of task().elements"
             class="step-label"
             [ngStyle]="{ 'left.px': pos.x }"
           >
@@ -76,6 +81,10 @@ import { InlineSVGModule } from 'ng-inline-svg-2';
         flex-direction: column;
         align-items: center;
         padding: 40px;
+      }
+
+      .title {
+        margin-bottom: 18px;
       }
 
       .note-line {
@@ -161,12 +170,7 @@ import { InlineSVGModule } from 'ng-inline-svg-2';
   ],
 })
 export class AppMusic8Component {
-  @Input() correctPositions: {
-    name: string;
-    x: number;
-    y: number;
-    stepNumber?: string;
-  }[] = [];
+  public task: InputSignal<Task> = input.required<Task>();
 
   public baseNotesStep = 50;
 
@@ -253,6 +257,7 @@ export class AppMusic8Component {
         this.noteLine.nativeElement.removeChild(note);
       }, 300);
     } else {
+      console.log('name', this.draggingNote.name, 'x', snappedX, 'y', snappedY)
       this.placedNotes.push({ ...this.draggingNote, x: snappedX, y: snappedY });
     }
 
@@ -260,7 +265,7 @@ export class AppMusic8Component {
   }
 
   checkNotes() {
-    const isCorrect = this.correctPositions.every((correctNote) =>
+    const isCorrect = this.task().elements.every((correctNote) =>
       this.placedNotes.some(
         (placed) =>
           placed.name === correctNote.name &&

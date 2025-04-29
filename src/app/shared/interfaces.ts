@@ -3,8 +3,15 @@ export interface Task {
   elements: Element[];
 }
 
+export enum ElementTypes {
+  NOTE,
+  CLEF,
+  ACCIDENTAL
+}
+
 export interface Element {
-  type: string;
+  type: ElementTypes;
+  x?: number;
   y: number;
   name?: string;
   stepNumber?: string;

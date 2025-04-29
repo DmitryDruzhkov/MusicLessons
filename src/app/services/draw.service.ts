@@ -1,6 +1,6 @@
 import { ElementRef, Injectable } from '@angular/core';
 import { staffLines } from '../shared/constants';
-import { Element } from '../shared/interfaces';
+import { Element, ElementTypes } from '../shared/interfaces';
 
 @Injectable()
 export class DrawService {
@@ -35,15 +35,15 @@ export class DrawService {
 
     elements.forEach((element: Element) => {
       switch (element.type) {
-        case 'clef':
+        case ElementTypes.CLEF:
           this.drawClef(element, x);
           x += 60;
           break;
-        case 'accidental':
+        case ElementTypes.ACCIDENTAL:
           this.drawAccidental(element, x);
           x += 50;
           break;
-        case 'note':
+        case ElementTypes.NOTE:
           this.notePositions[element.name as string] = x; // Сохраняем позицию ноты
           this.drawNote(element, x);
           x += 50;

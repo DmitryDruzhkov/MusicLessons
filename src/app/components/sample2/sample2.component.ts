@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, ElementRef, inject, input, ViewChild } from '@angular/core';
-import { Task } from '../../shared/interfaces';
+import { ElementTypes, Task } from '../../shared/interfaces';
 import { DrawService } from '../../services/draw.service';
 
 @Component({
@@ -34,7 +34,7 @@ export class Sample2Component {
     const y = (event.clientY - rect.top) / this.scaleFactor;
 
     this.task().elements.forEach(element => {
-      if (element.type === 'note') {
+      if (element.type === ElementTypes.NOTE) {
         const dx = this.drawService.notePositions[element.name as string] - x;
         const dy = element.y - y;
         if (Math.sqrt(dx * dx + dy * dy) < 10) {
