@@ -2,7 +2,7 @@ import { ChangeDetectionStrategy, Component, inject, Signal } from '@angular/cor
 import { Sample1Component } from './components/sample1/sample1.component';
 import { Sample2Component } from './components/sample2/sample2.component';
 import { TasksService } from './services/tasks.service';
-import { ElementTypes, Task } from './shared/interfaces';
+import { ElementTypes, Notes, Task } from './shared/interfaces';
 import { Sample3Component } from './components/sample3/sample3.component';
 import { Sample4Component } from './components/sample4/sample4.component';
 import { Sample5Component } from './components/sample5/sample5.component';
@@ -25,14 +25,15 @@ export class AppComponent {
 
   public noteElements = noteElements;
 
+  // надо добавит энум правильной ноты и потом сравнить по его координатам
   public task: Task = {
-    title: 'Поставь ноты в правильном порядке',
+    title: 'Размести ноты, что бы получилась гамма До мажор',
     elements: [
-      { type: ElementTypes.NOTE, name: 'До', x: 50, y: 180, stepNumber: 'V' },
-      { type: ElementTypes.NOTE, name: 'Ре', x: 125, y: 150, stepNumber: 'V' },
-      { type: ElementTypes.NOTE, name: 'Ми', x: 200, y: 120, stepNumber: 'V' },
-      { type: ElementTypes.NOTE, name: 'Фа', x: 275, y: 90, stepNumber: 'V' },
-      { type: ElementTypes.NOTE, name: 'Соль', x: 350, y: 60, stepNumber: 'V' },
+      { type: ElementTypes.NOTE, note: Notes.DO, name: 'До', x: 50, y: 180 },
+      { type: ElementTypes.NOTE, note: Notes.RE, name: 'Ре', x: 125, y: 150 },
+      { type: ElementTypes.NOTE, note: Notes.MI, name: 'Ми', x: 200, y: 120 },
+      { type: ElementTypes.NOTE, note: Notes.FA, name: 'Фа', x: 275, y: 90 },
+      { type: ElementTypes.NOTE, note: Notes.SOL, name: 'Соль', x: 350, y: 60 },
     ]
   };
 }

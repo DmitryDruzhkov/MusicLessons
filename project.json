@@ -1,6 +1,6 @@
 {
   "$schema": "node_modules/nx/schemas/project-schema.json",
-  "name": "MysicStudy",
+  "name": "MusicStudy",
   "projectType": "application",
   "generators": {
     "@schematics/angular:component": {
@@ -14,7 +14,7 @@
     "build": {
       "executor": "@angular-devkit/build-angular:application",
       "options": {
-        "outputPath": "dist/mysic-study",
+        "outputPath": "dist/music-study",
         "index": "src/index.html",
         "browser": "src/main.ts",
         "polyfills": [
@@ -64,10 +64,10 @@
       "executor": "@angular-devkit/build-angular:dev-server",
       "configurations": {
         "production": {
-          "buildTarget": "MysicStudy:build:production"
+          "buildTarget": "MusicStudy:build:production"
         },
         "development": {
-          "buildTarget": "MysicStudy:build:development"
+          "buildTarget": "MusicStudy:build:development"
         }
       },
       "defaultConfiguration": "development"
@@ -101,7 +101,7 @@
     "deploy": {
       "executor": "angular-cli-ghpages:deploy",
       "options": {
-        "buildTarget": "MysicStudy:build"
+        "buildTarget": "MusicStudy:build"
       }
     }
   }

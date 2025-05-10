@@ -8,7 +8,8 @@ import {
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { InlineSVGModule } from 'ng-inline-svg-2';
-import { Task } from '../../shared/interfaces';
+import { CorrectNote, Notes, Task } from '../../shared/interfaces';
+import { CorrectNotes } from '../../shared/constants';
 
 @Component({
   selector: 'app-music-game-8',
@@ -123,8 +124,8 @@ import { Task } from '../../shared/interfaces';
       .music-grid {
         position: relative;
         width: 800px;
-        height: 210px;
-        margin-top: 20px;
+        height: 180px;
+        margin-top: 50px;
       }
 
       .grid-line.horizontal {
@@ -194,13 +195,13 @@ export class AppMusic8Component {
   gridY = Array.from({ length: 5 }, (_, i) => i * this.yStep);
 
   notes = [
-    { name: 'До', id: 1 },
-    { name: 'Ре', id: 2 },
-    { name: 'Ми', id: 3 },
-    { name: 'Фа', id: 4 },
-    { name: 'Соль', id: 5 },
-    { name: 'Ля', id: 6 },
-    { name: 'Си', id: 7 },
+    { name: 'До', note: Notes.DO, id: 1 },
+    { name: 'Ре', note: Notes.RE, id: 2 },
+    { name: 'Ми', note: Notes.MI, id: 3 },
+    { name: 'Фа', note: Notes.FA, id: 4 },
+    { name: 'Соль', note: Notes.SOL, id: 5 },
+    { name: 'Ля', note: Notes.LA, id: 6 },
+    { name: 'Си', note: Notes.SI, id: 7 },
   ];
 
   gridX = Array.from({ length: 8 }, (_, i) => i * this.xStep);
@@ -287,14 +288,25 @@ export class AppMusic8Component {
   }
 
   checkNotes() {
-    const isCorrect = this.task().elements.every((correctNote) =>
+    /* const isCorrect = this.task().elements.every((correctNote) =>
       this.placedNotes.some(
         (placed) =>
           placed.name === correctNote.name &&
           placed.x === correctNote.x &&
           placed.y === correctNote.y
       )
-    );
+    ); */
+
+    const isCorrect = this.placedNotes.every(
+      (placed) => {
+        if (CorrectNotes.has(placed.note)) {
+          const correctNote: CorrectNote = CorrectNotes.get(placed.note) as CorrectNote;
+          const isCorrect = placed.x === correctNote.x && placed.y === correctNote.y;
+          return isCorrect;
+        }
+
+        return false;
+      });
 
     this.resultMessage = isCorrect
       ? 'Все ноты установлены правильно!'

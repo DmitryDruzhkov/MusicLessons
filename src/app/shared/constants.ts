@@ -1,3 +1,5 @@
+import { CorrectNote, Notes } from './interfaces';
+
 export enum XCoordinates {
   TrebleClef = 0,
   Accidental = 60,
@@ -5,7 +7,7 @@ export enum XCoordinates {
   Note2 = 160,
   Note3 = 210,
   Note4 = 260,
-  Note5 = 310
+  Note5 = 310,
 }
 
 export enum YCoordinates {
@@ -38,7 +40,59 @@ export enum YCoordinates {
   FA_4 = -130,
   SOL_4 = -140,
   LYA_4 = -150,
-  SI_4 = -160
+  SI_4 = -160,
 }
 
 export const staffLines: number[] = [10, 30, 50, 70, 90];
+
+export const CorrectNotes = new Map<Notes, CorrectNote>([
+  [
+    Notes.DO,
+    {
+      x: 205,
+      y: 138,
+    },
+  ],
+  [
+    Notes.RE,
+    {
+      x: 280,
+      y: 123,
+    },
+  ],
+  [
+    Notes.MI,
+    {
+      x: 355,
+      y: 108,
+    },
+  ],
+  [
+    Notes.FA,
+    {
+      x: 430,
+      y: 93,
+    },
+  ],
+  [
+    Notes.SOL,
+    {
+      x: 505,
+      y: 78,
+    },
+  ],
+  [
+    Notes.LA,
+    {
+      x: 580,
+      y: 63,
+    },
+  ],
+  [
+    Notes.SI,
+    {
+      x: 655,
+      y: 48,
+    },
+  ],
+]);
