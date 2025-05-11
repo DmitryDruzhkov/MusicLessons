@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, inject, Signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, signal, Signal } from '@angular/core';
 import { Sample1Component } from './components/sample1/sample1.component';
 import { Sample2Component } from './components/sample2/sample2.component';
 import { Task2, TasksService } from './services/tasks.service';
@@ -25,16 +25,34 @@ export class AppComponent {
 
   public noteElements = noteElements;
 
-  public task: Task = {
-    title: 'Размести ноты, что бы получилась гамма До мажор',
-    elements: [
-      { type: ElementTypes.NOTE, note: Notes.DO },
-      { type: ElementTypes.NOTE, note: Notes.RE },
-      { type: ElementTypes.NOTE, note: Notes.MI },
-      { type: ElementTypes.NOTE, note: Notes.FA },
-      { type: ElementTypes.NOTE, note: Notes.SOL },
-      { type: ElementTypes.NOTE, note: Notes.LA },
-      { type: ElementTypes.NOTE, note: Notes.SI },
-    ]
-  };
+  public tasksDND: Signal<Task[]> = signal([
+    {
+      title: 'Размести ноты, что бы получилась гамма До мажор',
+      elements: [
+        { type: ElementTypes.NOTE, note: Notes.DO },
+        { type: ElementTypes.NOTE, note: Notes.RE },
+        { type: ElementTypes.NOTE, note: Notes.MI },
+        { type: ElementTypes.NOTE, note: Notes.FA },
+        { type: ElementTypes.NOTE, note: Notes.SOL },
+        { type: ElementTypes.NOTE, note: Notes.LA },
+        { type: ElementTypes.NOTE, note: Notes.SI },
+      ]
+    },
+    {
+      title: 'Построй тоническое трезвучие в До мажоре',
+      elements: [
+        { type: ElementTypes.NOTE, note: Notes.DO },
+        { type: ElementTypes.NOTE, note: Notes.MI },
+        { type: ElementTypes.NOTE, note: Notes.SOL },
+      ]
+    },
+    {
+      title: 'Построй субдоминантное трезвучие в До мажоре',
+      elements: [
+        { type: ElementTypes.NOTE, note: Notes.FA },
+        { type: ElementTypes.NOTE, note: Notes.LA },
+        { type: ElementTypes.NOTE, note: Notes.DO },
+      ]
+    },
+  ]);
 }

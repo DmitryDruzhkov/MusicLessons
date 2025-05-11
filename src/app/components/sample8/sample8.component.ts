@@ -357,8 +357,7 @@ export class AppMusic8Component {
         const correctNote: CorrectNote = CorrectNotes.get(
           placed.note
         ) as CorrectNote;
-        const isCorrect =
-          placed.x === correctNote.x && placed.y === correctNote.y;
+        const isCorrect = placed.y === correctNote.y;
         return isCorrect;
       }
 

@@ -1,4 +1,6 @@
-<app-music-game-8 [task]="task"></app-music-game-8>
+@for (task of tasksDND(); track $index) {
+  <app-music-game-8 [task]="task"></app-music-game-8>
+}
 
 <!-- <app-sample1/> -->
 <!-- <app-music-game></app-music-game>
