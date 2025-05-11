@@ -198,7 +198,7 @@ import { CorrectNotes } from '../../shared/constants';
     `,
   ],
 })
-export class AppMusic8Component {
+export class AppMusicDNDComponent {
   public task: InputSignal<Task> = input.required<Task>();
 
   @ViewChild('grid') grid!: ElementRef;
