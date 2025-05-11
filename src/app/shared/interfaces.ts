@@ -1,12 +1,12 @@
 export interface Task {
   title: string;
-  elements: Element[];
+  elements: TaskElement[];
 }
 
 export enum ElementTypes {
   NOTE,
   CLEF,
-  ACCIDENTAL
+  ACCIDENTAL,
 }
 
 export enum Notes {
@@ -26,25 +26,34 @@ export enum StepNumbers {
   IV = 'IV',
   V = 'V',
   VI = 'VI',
-  VII = 'VII'
+  VII = 'VII',
 }
 
 /* export interface Note {
   name: NoteNames,
 } */
 
-export interface Element {
+export interface TaskElement {
   type: ElementTypes;
-  x?: number;
+  note: Notes;
+}
+
+export interface CorrectNote {
+  name: string;
+  x: number;
   y: number;
-  note?: Notes;
-  name?: string;
+}
+
+export interface NoteElement extends TaskElement, CorrectNote {
   stepNumber?: string;
   correct?: boolean;
   selected?: boolean;
 }
 
-export interface CorrectNote {
-  x: number;
-  y: number;
+export interface DragNoteElement extends NoteElement {
+  originalX: number;
+  originalY: number;
+  offsetX: number;
+  offsetY: number;
+  isWithSubLine?: boolean;
 }

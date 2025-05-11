@@ -1,6 +1,7 @@
 import { ElementRef, Injectable } from '@angular/core';
 import { staffLines } from '../shared/constants';
-import { Element, ElementTypes } from '../shared/interfaces';
+import { NoteElement, ElementTypes } from '../shared/interfaces';
+import { TaskElement2 } from './tasks.service';
 
 @Injectable()
 export class DrawService {
@@ -29,11 +30,11 @@ export class DrawService {
     this.ctx.scale(scale, scale);
   }
 
-  public drawElements(elements: Element[]) {
+  public drawElements(elements: TaskElement2[]) {
     this.clearCanvas(); // Очищаем Canvas перед рисованием
     let x = 0;
 
-    elements.forEach((element: Element) => {
+    elements.forEach((element: TaskElement2) => {
       switch (element.type) {
         case ElementTypes.CLEF:
           this.drawClef(element, x);
@@ -54,7 +55,7 @@ export class DrawService {
     this.drawStepNumbers(elements);
   }
 
-  public drawClef(element: Element, x: number) {
+  public drawClef(element: TaskElement2, x: number) {
     this.drawTrebleClefImage(x, element.y);
   }
 
@@ -66,7 +67,7 @@ export class DrawService {
     };
   }
 
-  public drawAccidental(element: Element, x: number) {
+  public drawAccidental(element: TaskElement2, x: number) {
     this.ctx.save();
     this.ctx.beginPath();
     this.ctx.font = '30px Arial';
@@ -78,7 +79,7 @@ export class DrawService {
     this.ctx.restore();
   }
 
-  public drawNote(element: Element, x: number) {
+  public drawNote(element: TaskElement2, x: number) {
     this.ctx.beginPath();
     this.ctx.arc(x, element.y, 10, 0, 2 * Math.PI);
     if (element.selected) {
@@ -95,7 +96,7 @@ export class DrawService {
     this.ctx.fillText(element.name as string, x - 10, element.y + 20);
   }
 
-  public drawStepNumbers(elements: Element[]) {
+  public drawStepNumbers(elements: TaskElement2[]) {
     for (const key in this.notePositions) {
       const x = this.notePositions[key];
       const element = elements.find(e => e.name === key);

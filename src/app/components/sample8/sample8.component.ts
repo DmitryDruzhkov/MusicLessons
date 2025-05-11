@@ -5,10 +5,20 @@ import {
   HostListener,
   InputSignal,
   input,
+  computed,
+  Signal,
+  signal,
+  WritableSignal,
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { InlineSVGModule } from 'ng-inline-svg-2';
-import { CorrectNote, Notes, Task } from '../../shared/interfaces';
+import {
+  CorrectNote,
+  NoteElement,
+  DragNoteElement,
+  Task,
+  TaskElement,
+} from '../../shared/interfaces';
 import { CorrectNotes } from '../../shared/constants';
 
 @Component({
@@ -22,7 +32,7 @@ import { CorrectNotes } from '../../shared/constants';
       </div>
       <div class="note-line" #noteLine>
         <div
-          *ngFor="let note of notes; let i = index"
+          *ngFor="let note of notes(); let i = index"
           class="note"
           [ngStyle]="{ 'left.px': i * baseNotesStep }"
           (mousedown)="startDrag($event, note, false)"
@@ -39,7 +49,7 @@ import { CorrectNotes } from '../../shared/constants';
         ></div>
 
         <div
-          *ngFor="let note of placedNotes"
+          *ngFor="let note of placedNotes()"
           class="note placed"
           [ngStyle]="{ 'top.px': note.y, 'left.px': note.x }"
           (mousedown)="startDrag($event, note, true)"
@@ -63,7 +73,7 @@ import { CorrectNotes } from '../../shared/constants';
           {{ draggingNote.name }}
         </div>
 
-        <div class="step-labels">
+        <!-- <div class="step-labels">
           <div
             *ngFor="let pos of task().elements"
             class="step-label"
@@ -71,10 +81,16 @@ import { CorrectNotes } from '../../shared/constants';
           >
             {{ pos.stepNumber }}
           </div>
-        </div>
+        </div> -->
       </div>
 
-      <button class="check-button" (click)="checkNotes()">Проверить</button>
+      <button
+        [disabled]="isCanCheck() === false"
+        class="check-button"
+        (click)="checkNotes()"
+      >
+        Проверить
+      </button>
       <p *ngIf="resultMessage">{{ resultMessage }}</p>
     </div>
   `,
@@ -151,11 +167,11 @@ import { CorrectNotes } from '../../shared/constants';
       }
 
       .placed {
-        background: lightcoral;
+        background: lightblue;
       }
 
       .dragging {
-        background: orange;
+        background: lightblue;
         opacity: 0.7;
         pointer-events: none;
         transition: none;
@@ -185,47 +201,65 @@ import { CorrectNotes } from '../../shared/constants';
 export class AppMusic8Component {
   public task: InputSignal<Task> = input.required<Task>();
 
+  @ViewChild('grid') grid!: ElementRef;
+  @ViewChild('noteLine') noteLine!: ElementRef;
+
+  public isCanCheck: Signal<boolean> = computed(() => {
+    const notesLength: number = this.notes().length;
+    const placedNotesLength: number = this.placedNotes().length;
+
+    return notesLength === placedNotesLength;
+  });
+
   public baseNotesStep = 50;
 
   private xStep: number = 75;
   private yStep: number = 30;
+  private dragElement!: HTMLElement;
 
   public clifOffset: number = 200;
 
-  gridY = Array.from({ length: 5 }, (_, i) => i * this.yStep);
+  public gridY = Array.from({ length: 5 }, (_, i) => i * this.yStep);
 
-  notes = [
-    { name: 'До', note: Notes.DO, id: 1 },
-    { name: 'Ре', note: Notes.RE, id: 2 },
-    { name: 'Ми', note: Notes.MI, id: 3 },
-    { name: 'Фа', note: Notes.FA, id: 4 },
-    { name: 'Соль', note: Notes.SOL, id: 5 },
-    { name: 'Ля', note: Notes.LA, id: 6 },
-    { name: 'Си', note: Notes.SI, id: 7 },
-  ];
+  public notes: Signal<NoteElement[]> = computed(() => {
+    return this.task()
+      .elements.map((element: TaskElement) => {
+        const correctNote: CorrectNote | undefined = CorrectNotes.get(
+          element.note
+        );
 
-  gridX = Array.from({ length: 8 }, (_, i) => i * this.xStep);
-  placedNotes: any[] = [];
-  draggingNote: any = null;
+        if (correctNote) {
+          return {
+            ...element,
+            ...correctNote,
+          };
+        }
 
-  @ViewChild('grid') grid!: ElementRef;
-  @ViewChild('noteLine') noteLine!: ElementRef;
+        return null;
+      })
+      .filter(Boolean) as NoteElement[];
+  });
 
-  startDrag(event: MouseEvent, note: any, isPlaced = false) {
-    const element = event.target as HTMLElement;
+  public placedNotes: WritableSignal<DragNoteElement[]> = signal([]);
+  public draggingNote: DragNoteElement | null = null;
+
+  public startDrag(event: MouseEvent, note: NoteElement, isPlaced = false) {
+    this.dragElement = event.target as HTMLElement;
 
     if (isPlaced) {
-      this.placedNotes = this.placedNotes.filter((n) => n !== note);
+      this.placedNotes.set(this.placedNotes().filter((n) => n !== note));
     }
 
     const gridRect = this.grid.nativeElement.getBoundingClientRect();
-    const offsetX = event.clientX - element.getBoundingClientRect().left;
-    const offsetY = event.clientY - element.getBoundingClientRect().top;
+    const offsetX: number =
+      event.clientX - this.dragElement.getBoundingClientRect().left;
+    const offsetY: number =
+      event.clientY - this.dragElement.getBoundingClientRect().top;
 
     this.draggingNote = {
       ...note,
-      originalX: element.offsetLeft,
-      originalY: element.offsetTop,
+      originalX: this.dragElement.offsetLeft,
+      originalY: this.dragElement.offsetTop,
       x: event.clientX - gridRect.left,
       y: event.clientY - gridRect.top,
       offsetX,
@@ -234,7 +268,7 @@ export class AppMusic8Component {
   }
 
   @HostListener('document:mousemove', ['$event'])
-  onMouseMove(event: MouseEvent) {
+  public onMouseMove(event: MouseEvent) {
     if (!this.draggingNote) return;
     const gridRect = this.grid.nativeElement.getBoundingClientRect();
     this.draggingNote.x = event.clientX - gridRect.left;
@@ -242,71 +276,94 @@ export class AppMusic8Component {
   }
 
   @HostListener('document:mouseup', [])
-  stopDrag() {
+  public stopDrag() {
     if (!this.draggingNote) return;
 
-    let x = this.draggingNote.x - this.draggingNote.offsetX + 20;
+    let x = (this.draggingNote.x as number) - this.draggingNote.offsetX + 20;
     let y = this.draggingNote.y - this.draggingNote.offsetY + 12;
 
     const snappedX = Math.round(x / this.xStep) * this.xStep - 20;
     const snappedY = Math.round(y / (this.yStep / 2)) * (this.yStep / 2) - 12;
 
-    const conflict = this.placedNotes.some((note) => note.x === snappedX);
+    const conflict = this.placedNotes().some((note) => note.x === snappedX);
 
     const isByClif: boolean = x < this.clifOffset;
 
     if (conflict || isByClif) {
-      this.setToDefaultPlace();
+      this.setToDefaultPlace(
+        snappedX,
+        snappedY,
+        this.draggingNote.originalX,
+        this.draggingNote.originalY
+      );
     } else {
-      console.log('name', this.draggingNote.name, 'x', snappedX, 'y', snappedY);
-      const isWithSubLine: boolean = snappedY > 120 || snappedY < 0;
-      this.placedNotes.push({
-        ...this.draggingNote,
-        x: snappedX,
-        y: snappedY,
-        isWithSubLine,
-      });
+      this.placedNotes.set([
+        ...this.placedNotes(),
+        {
+          ...this.draggingNote,
+          x: snappedX,
+          y: snappedY,
+          isWithSubLine: this.isWithSubLine(snappedY),
+        },
+      ]);
     }
 
     this.draggingNote = null;
   }
 
-  setToDefaultPlace() {
+  private setToDefaultPlace(
+    x: number,
+    y: number,
+    originalX: number,
+    originalY: number
+  ) {
     const note = document.createElement('div');
     note.className = 'note';
     note.style.position = 'absolute';
-    note.style.left = `${this.draggingNote.originalX}px`;
-    note.style.top = `${this.draggingNote.originalY}px`;
-    note.textContent = this.draggingNote.name;
+    note.style.left = `${x}px`;
+    note.style.top = `${y}px`;
+    note.textContent = this.draggingNote?.name || '';
     note.style.background = 'lightblue';
-    note.style.transition = 'top 0.3s ease, left 0.3s ease';
-    this.noteLine.nativeElement.appendChild(note);
+    this.grid.nativeElement.appendChild(note);
 
     setTimeout(() => {
-      this.noteLine.nativeElement.removeChild(note);
+      note.style.transition = 'top 0.3s ease, left 0.3s ease';
+      note.style.left = `${originalX}px`;
+      note.style.top = `${originalY}px`;
+    }, 0);
+
+    setTimeout(() => {
+      this.grid.nativeElement.removeChild(note);
     }, 300);
   }
 
-  checkNotes() {
-    /* const isCorrect = this.task().elements.every((correctNote) =>
-      this.placedNotes.some(
-        (placed) =>
-          placed.name === correctNote.name &&
-          placed.x === correctNote.x &&
-          placed.y === correctNote.y
-      )
-    ); */
+  private isWithSubLine(y: number): boolean {
+    if (y > 120) {
+      if ((y + 12) % 30 === 0) {
+        return true;
+      }
+    } else if (y < 0) {
+      if ((y + 12) % 30 === 0) {
+        return true;
+      }
+    }
 
-    const isCorrect = this.placedNotes.every(
-      (placed) => {
-        if (CorrectNotes.has(placed.note)) {
-          const correctNote: CorrectNote = CorrectNotes.get(placed.note) as CorrectNote;
-          const isCorrect = placed.x === correctNote.x && placed.y === correctNote.y;
-          return isCorrect;
-        }
+    return false;
+  }
 
-        return false;
-      });
+  public checkNotes() {
+    const isCorrect = this.placedNotes().every((placed: DragNoteElement) => {
+      if (CorrectNotes.has(placed.note)) {
+        const correctNote: CorrectNote = CorrectNotes.get(
+          placed.note
+        ) as CorrectNote;
+        const isCorrect =
+          placed.x === correctNote.x && placed.y === correctNote.y;
+        return isCorrect;
+      }
+
+      return false;
+    });
 
     this.resultMessage = isCorrect
       ? 'Все ноты установлены правильно!'

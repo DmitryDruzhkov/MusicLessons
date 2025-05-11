@@ -45,10 +45,11 @@ export enum YCoordinates {
 
 export const staffLines: number[] = [10, 30, 50, 70, 90];
 
-export const CorrectNotes = new Map<Notes, CorrectNote>([
+export const CorrectNotes: Map<Notes, CorrectNote> = new Map<Notes, CorrectNote>([
   [
     Notes.DO,
     {
+      name: 'До',
       x: 205,
       y: 138,
     },
@@ -56,6 +57,7 @@ export const CorrectNotes = new Map<Notes, CorrectNote>([
   [
     Notes.RE,
     {
+      name: 'Ре',
       x: 280,
       y: 123,
     },
@@ -63,6 +65,7 @@ export const CorrectNotes = new Map<Notes, CorrectNote>([
   [
     Notes.MI,
     {
+      name: 'Ми',
       x: 355,
       y: 108,
     },
@@ -70,6 +73,7 @@ export const CorrectNotes = new Map<Notes, CorrectNote>([
   [
     Notes.FA,
     {
+      name: 'Фа',
       x: 430,
       y: 93,
     },
@@ -77,6 +81,7 @@ export const CorrectNotes = new Map<Notes, CorrectNote>([
   [
     Notes.SOL,
     {
+      name: 'Соль',
       x: 505,
       y: 78,
     },
@@ -84,6 +89,7 @@ export const CorrectNotes = new Map<Notes, CorrectNote>([
   [
     Notes.LA,
     {
+      name: 'Ля',
       x: 580,
       y: 63,
     },
@@ -91,6 +97,7 @@ export const CorrectNotes = new Map<Notes, CorrectNote>([
   [
     Notes.SI,
     {
+      name: 'Си',
       x: 655,
       y: 48,
     },

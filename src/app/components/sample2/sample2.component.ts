@@ -1,6 +1,7 @@
 import { ChangeDetectionStrategy, Component, ElementRef, inject, input, ViewChild } from '@angular/core';
 import { ElementTypes, Task } from '../../shared/interfaces';
 import { DrawService } from '../../services/draw.service';
+import { Task2 } from '../../services/tasks.service';
 
 @Component({
   selector: 'app-sample2',
@@ -11,7 +12,7 @@ import { DrawService } from '../../services/draw.service';
   providers: [DrawService]
 })
 export class Sample2Component { 
-  public task = input.required<Task>();
+  public task = input.required<Task2>();
 
   private drawService = inject(DrawService);
 

@@ -1,13 +1,27 @@
-import { Injectable, signal, Signal } from '@angular/core';
+import { Injectable, signal, Signal, WritableSignal } from '@angular/core';
 import { ElementTypes, Task } from '../shared/interfaces';
 import { XCoordinates, YCoordinates } from '../shared/constants';
+
+export interface Task2 {
+  title: string;
+  elements: TaskElement2[];
+}
+
+export interface TaskElement2 {
+  type: ElementTypes;
+  y: number;
+  name: string;
+  stepNumber?: string;
+  correct?: boolean;
+  selected?: boolean;
+}
 
 @Injectable({
   providedIn: 'root'
 })
 export class TasksService {
 
-  public tasks: Signal<Task[]> = signal([
+  public tasks: WritableSignal<Task2[]> = signal([
     {
       title: 'Соль мажор',
       elements: [
