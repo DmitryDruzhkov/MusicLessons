@@ -1,0 +1,21 @@
+<div>
+  <div class="note-line">
+    <div *ngFor="let note of notes" class="note" (mousedown)="startDrag($event, note)">
+      {{ note.name }}
+    </div>
+  </div>
+  
+  <div class="music-grid" #grid (mouseup)="stopDrag($event)">
+    <div class="grid-line horizontal" *ngFor="let line of gridLines"></div>
+    <div class="grid-line vertical" *ngFor="let line of verticalLines"></div>
+  
+    <div *ngFor="let note of placedNotes" 
+         class="note placed" 
+         [ngStyle]="{'top.px': note.y, 'left.px': note.x}">
+      {{ note.name }}
+    </div>
+  </div>
+</div>
+
+<button (click)="checkNotes()">Проверить2</button>
+<p *ngIf="resultMessage">{{ resultMessage }}</p>

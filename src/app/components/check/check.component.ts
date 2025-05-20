@@ -16,13 +16,13 @@ import {
   CorrectNote,
   NoteElement,
   DragNoteElement,
-  Task,
   TaskElement,
+  TaskDND,
 } from '../../shared/interfaces';
 import { CorrectNotes } from '../../shared/constants';
 
 @Component({
-  selector: 'app-music-game-8',
+  selector: 'app-music-check',
   standalone: true,
   imports: [CommonModule, InlineSVGModule],
   template: `
@@ -30,7 +30,7 @@ import { CorrectNotes } from '../../shared/constants';
       <div class="title">
         {{ task().title }}
       </div>
-      <div class="note-line" #noteLine>
+      <!-- <div class="note-line" #noteLine>
         <div
           *ngFor="let note of notes(); let i = index"
           class="note"
@@ -39,7 +39,7 @@ import { CorrectNotes } from '../../shared/constants';
         >
           {{ note.name }}
         </div>
-      </div>
+      </div> -->
 
       <div class="music-grid" #grid>
         <div
@@ -107,13 +107,13 @@ import { CorrectNotes } from '../../shared/constants';
         margin-bottom: 18px;
       }
 
-      .note-line {
+      /* .note-line {
         display: flex;
         gap: 10px;
         position: relative;
         height: 50px;
         width: 400px;
-      }
+      } */
 
       .subline {
         width: 60px;
@@ -198,8 +198,8 @@ import { CorrectNotes } from '../../shared/constants';
     `,
   ],
 })
-export class AppMusicDNDComponent {
-  public task: InputSignal<Task> = input.required<Task>();
+export class AppMusicCheckComponent {
+  public task: InputSignal<TaskDND> = input.required<TaskDND>();
 
   @ViewChild('grid') grid!: ElementRef;
   @ViewChild('noteLine') noteLine!: ElementRef;

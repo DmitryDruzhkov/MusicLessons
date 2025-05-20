@@ -1,5 +1,9 @@
 @for (task of tasksDND(); track $index) {
-  <app-music-game-8 [task]="task"></app-music-game-8>
+  <app-music-check [task]="task"></app-music-check>
+}
+
+@for (task of tasksDND(); track $index) {
+  <app-music-dnd [task]="task"></app-music-dnd>
 }
 
 <!-- <app-sample1/> -->
@@ -13,6 +17,6 @@
 
 <app-sample3></app-sample3> -->
 
-@for (task of tasks(); track $index) {
+@for (task of tasksDNDOld(); track $index) {
   <app-sample2 [task]="task"/>
 }

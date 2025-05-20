@@ -1,4 +1,23 @@
-export interface Task {
+export interface TaskElement2 {
+  type: ElementTypes;
+  y: number;
+  name: string;
+  stepNumber?: string;
+  correct?: boolean;
+  selected?: boolean;
+}
+
+export interface TaskDNDOld {
+  title: string;
+  elements: TaskElement2[];
+}
+
+export interface TaskCheck {
+  title: string;
+  elements: TaskElement[];
+}
+
+export interface TaskDND {
   title: string;
   elements: TaskElement[];
 }
